@@ -1,0 +1,168 @@
+# 1 Préparation des donn?es
+
+# 1.1 Description 
+
+# 1.2 Importation et mise en forme
+
+# Chargement des packages requis
+
+library(readxl)
+library(dplyr)
+library(gtsummary)
+library(gt)
+library(sf)
+library(leaflet)
+library(ggplot2)
+library(ggspatial)
+library(broom)
+library(questionr)
+
+
+# Importation du fichier Excel dans un data.frame nommé projet
+projet <- read_excel("Bases/Base_Partie 1.xlsx")
+
+# Résumons les valeurs manquantes par variable
+table_missing <- projet %>%
+  summarize_all(~ sum(is.na(.))) 
+  
+
+# 1.3 Création des variables 
+
+# Renommons les variables
+projet <- projet %>%
+  rename(region = q1, departement = q2, sexe = q23)
+
+# Création de  la variable "sexe_2"
+projet <- projet %>%
+  mutate(sexe_2 = ifelse(sexe == "Femme", 1, 0))
+
+# Création du data.frame "langues"
+langues <- projet %>%
+  select(key, starts_with("q24a_"))
+
+# Création de la variable "parle"
+langues <- langues %>%
+  mutate(parle = rowSums(.[2:ncol(.)]))
+
+# Sélection des variables "key" et "parle"
+langues <- langues %>%
+  select(key, parle)
+
+# Mergons les data.frame "projet" et "langues"
+projet <- projet %>%
+  left_join(langues, by = "key")
+
+
+# 2 Analyse descriptive
+
+# Répartition des PME suivant le sexe, le niveau d'instruction, le statut juridique et le propriétaire locataire
+
+tbl1 <- projet %>% tbl_summary(include = c("sexe", "q25", "q12", "q81")) %>% bold_labels()
+
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+tbl2 <- projet %>% tbl_summary(
+  include = c("q25", "q12", "q81"), 
+  by ="sexe", label=list(q12~ "Statut juridique", 
+                         q25~ "Niveau d'instruction", 
+                         q81~ "Propriétaire/locataire")) %>% 
+  add_overall() %>% 
+  modify_header(label ~ "**Caractéristiques**") %>%
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+  bold_labels()
+
+## Empillement l'une sur l'autre
+gtsummary::tbl_stack(
+  list(tbl1, tbl2),
+  group_header = c("Modèle univarié", "Modèle bivaré"), quiet = TRUE ) %>% as_flex_table()
+
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+  list(tbl1, tbl2),
+  tab_spanner = c("Modèle bivarié", "Modèle multivarié")) %>% as_flex_table()
+
+
+# Statistiques descriptives
+
+# J'ai renommé les variables filières aux noms des différents filières
+projet2 <- projet %>%
+  rename(arachide = filiere_1, anacarde = filiere_2, mangue = filiere_3, riz =filiere_4)
+
+# J'ai crée la fonction croiser_filiere
+croiser_filiere <- function(projet, filiere) {
+  tbl_summary_result <- projet %>%
+    tbl_summary(
+      include = c("sexe", "q25", "q12", "q81"),
+      by = {{ filiere }},
+      label = list(q25 ~ "niveau d'instruction",
+                   q12 ~ "statut juridique",
+                   q81 ~ "propriétaire ou locataire")
+    ) %>%
+    add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>%
+    add_overall() %>%
+    add_n() %>%
+    modify_header(label ~ "**Variable**") %>%
+    modify_spanning_header(c("stat_1", "stat_2") ~ paste0("**", filiere, "**")) %>%
+    modify_footnote(all_stat_cols() ~ "Median (IQR) or Frequency (%)") %>%
+    modify_caption(paste0("**Table 1. croisement var et ", filiere, "**")) %>%
+    bold_labels()
+  
+  return(tbl_summary_result)
+}
+
+tbl_filiere_1 <- croiser_filiere(projet2, filiere = "arachide")
+tbl_filiere_2 <- croiser_filiere(projet2, filiere = "anacarde")
+tbl_filiere_3 <- croiser_filiere(projet2, filiere = "mangue")
+tbl_filiere_4 <- croiser_filiere(projet2, filiere = "riz")
+
+gtsummary::tbl_stack(
+  list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+  group_header = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+  list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+  tab_spanner = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+# 3 Cartographie
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+projet_map = st_as_sf(projet, coords = c("gps_menlongitude", "gps_menlatitude"), crs=st_crs(senegal), agr = "constant")
+projet_map = st_join(projet_map, senegal)
+
+ggplot() +
+  geom_sf(data=senegal)+
+  geom_sf_text(data=senegal, aes(label=NAME_1))+
+  geom_sf(data=projet_map, aes(color=sexe), size=2)+
+  scale_color_manual(values=c("blue", "red"))+
+  labs(title = "Répartition des PME suivant le sexe",
+       subtitle = "Carte du Sénégal",
+       color = "Sexe") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+  coord_sf(datum = NA)+
+  annotation_scale(location = "bl", text_col = "black")+
+  annotation_north_arrow(location = "tl")
+
+projet_map <- projet_map %>% rename(Niveau_instruction = q25)
+ggplot() +
+  geom_sf(data=senegal)+
+  geom_sf_text(data=senegal, aes(label=NAME_1))+
+  geom_sf(data = projet_map, aes(color = Niveau_instruction), size =3) +
+  scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+  labs(title = "Répartition des PME suivant le niveau d'instruction",
+       subtitle = "Carte du Sénégal") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+  coord_sf(datum = NA)+
+  annotation_scale(location = "bl", text_col = "black")+
+  annotation_north_arrow(location = "tl")
+
+
+  data <- read.csv("Bases/ACLED-Western_Africa.csv")
+
+
+

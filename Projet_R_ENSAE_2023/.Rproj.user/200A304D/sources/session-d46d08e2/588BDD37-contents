@@ -1,0 +1,524 @@
+---
+title: "Untitled"
+author: "Richard"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE,warning = FALSE)
+```
+
+# Chargement des packages
+
+```{r message=FALSE}
+library(readxl)
+library(dplyr)
+library(gtsummary)
+library(gt)
+library(sf)
+library(leaflet)
+library(ggplot2)
+library(flextable)
+library(ggspatial)
+library(broom)
+library(questionr)
+library(lubridate)
+
+```
+
+# Partie 1
+
+## 1. Préparation des données
+
+### 1.1 Decription
+
+### 1.2 Importation et mise en forme
+
+-   Importation de la base de données dans un objet de type data.frame nommé projet :
+
+```{r}
+projet <- read_excel("Bases/Base_Partie 1.xlsx")
+```
+
+-   Tableau résumant les valeurs manquantes par variable :
+
+```{r}
+df = data.frame(variables = colnames(projet),Valeurs_manquantes = colSums(is.na(projet)))
+df %>% gt()
+```
+
+-   Vérifions s'il y a des valeurs manquantes pour la variable key dans la base projet. Si oui, nous identifierons la (ou les) PME concernée(s).
+
+```{r, echo=FALSE, eval=FALSE}
+
+```
+
+### 1.3 Création de variables
+
+-   Renommage des variables
+
+```{r}
+# q1 en region, q2 en déparement et q23 en sexe
+projet <- projet %>%
+  rename(region = q1, departement = q2, sexe = q23)
+```
+
+-   Création de la variable sexe_2 vallant 1 si sexe égale à Femme et 0 sinon
+
+```{r}
+projet <- projet %>%
+  mutate(sexe_2 = ifelse(sexe == "Femme", 1, 0))
+```
+
+-   Création du data.frame "langues"
+
+```{r}
+langues <- projet %>%
+  select(key, starts_with("q24a_"))
+```
+
+-   Création de la variable "parle"
+
+```{r}
+langues <- langues %>%
+  mutate(parle = rowSums(.[2:ncol(.)]))
+```
+
+-   Sélection des variables "key" et "parle"
+
+```{r}
+langues <- langues %>%
+  select(key, parle)
+```
+
+-   Mergons les data.frame "projet" et "langues"
+
+```{r}
+projet <- projet %>%
+  left_join(langues, by = "key")
+```
+
+## 2. Statistiques descriptives
+
+### 2.1 Satistiques descriptives demandées
+
+Il nous est demandé la répartion des PME suivant:
+
+• le sexe
+
+• le niveau d'instruction
+
+• le statut juridique
+
+• le propriétaire/locataire
+
+• le statut juridique et le sexe
+
+• le niveau d'instruction et le sexe
+
+• Propriétaire/locataire suivant le sexe
+
+Nous résumons ces répartitions dans un seul tableau avec l'analyse univariée et l'anlyse buvariée
+
+```{r}
+# Répartition des PME suivant le sexe, le niveau d'instruction,
+# le statut juridique et le propriétaire locataire
+tbl1 <- projet %>% tbl_summary(
+  include = c("sexe", "q25", "q12", "q81"),
+  label=list(q25~ "Niveau d'instruction", 
+             q12~ "Statut juridique",
+             q81~ "Propriétaire/locataire"))
+
+# Répartition des PME suivant le statut juridique et le sexe,
+# le niveau d’instruction et le sexe, 	Propriétaire/locataire
+# et le sexe
+tbl2 <- projet %>% tbl_summary(
+  include = c("q25", "q12", "q81"), 
+  by ="sexe", label=list(q12~ "Statut juridique", 
+                         q25~ "Niveau d'instruction", 
+                         q81~ "Propriétaire/locataire")) %>% 
+  modify_header(label ~ "**Variables**") %>%
+  modify_spanning_header(all_stat_cols() ~ "**Sexe**") %>%
+  bold_labels()
+
+## Empillement l'une sur l'autre
+tbl_merge(
+    tbls = list(tbl1, tbl2),
+    tab_spanner = c("**Analyse univariée**", "**Analye bivariée**")) %>%
+  italicize_levels() %>%
+  as_flex_table() %>%
+  fontsize(size=10) %>%
+  width(width = 1.3)
+```
+
+### Statistiques descriptives de notre choix sur les autres variables:
+
+-   
+
+```{r}
+# Nous renommons les variables filières aux noms des différents filières
+projet2 <- projet %>%
+  rename(arachide = filiere_1, anacarde = filiere_2, mangue = filiere_3, riz =filiere_4)
+
+# Nous créeons une fonction croiser_filiere qui prend en argument
+# une filière et renvoie une analyse suivant la filière donnée
+croiser_filiere <- function(projet, filiere) {
+  tbl_summary_result <- projet %>%
+    tbl_summary(
+      include = c("sexe", "region", "q8" , "q17"),
+      by = {{ filiere }},
+      label = list(sexe ~ "Sexe",
+                   region ~ "Region",
+                   q8 ~ "Activité principale de l’entreprise",
+                   q17 ~ "Etat de la route bitumée")
+    ) %>%
+    modify_header(label ~ "**Variable**") %>%
+    bold_labels()
+  
+  return(tbl_summary_result)
+}
+
+tbl_filiere_1 <- croiser_filiere(projet2, filiere = "arachide")
+tbl_filiere_2 <- croiser_filiere(projet2, filiere = "anacarde")
+tbl_filiere_3 <- croiser_filiere(projet2, filiere = "mangue")
+tbl_filiere_4 <- croiser_filiere(projet2, filiere = "riz")
+
+tbl_merge(
+  list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+  tab_spanner = c("arachide", "anacarde", "mangue", "riz")) %>%
+  italicize_levels() %>%
+  as_flex_table() %>%
+  fontsize(size=8) %>%
+  width(width = 1.1 )
+```
+
+-   **Distribution de la population suivant les Regions par sexe:**
+
+```{r}
+ggplot(projet) +
+  aes(x = region, fill = sexe) +
+  geom_bar() +
+  geom_text(aes(label = after_stat(count)), stat = "count", position = position_stack(.5)) +
+  xlab("Région") +
+  ylab("Effectifs") +
+  labs(fill = "Sexe")
+```
+
+-   **Statistiques descriptives pour les variables de date**
+
+```{r}
+# Nous copie notre objet projet dans l'objet data
+data = projet
+# Convertir les colonnes en format de date
+data$submissiondate <- as_date(data$submissiondate)
+data$start <- as_date(data$start)
+data$today <- as_date(data$today)
+
+# Résumé statistique des colonnes de date
+summary(data$submissiondate)
+summary(data$start)
+summary(data$today)
+
+# Graphique de la distribution des dates de soumission
+ggplot(data, aes(x = submissiondate)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Distribution des dates de soumission",
+       x = "Date de soumission",
+       y = "Nombre d'observations")
+
+# Graphique des dates de début d'enregistrement des informations
+ggplot(data, aes(x = start)) +
+  geom_histogram(binwidth = 1, fill = "green", color = "black") +
+  labs(title = "Dates de début d'enregistrement des informations",
+       x = "Date de début d'enregistrement",
+       y = "Nombre d'observations")
+
+# Graphique des dates de l'enquête
+ggplot(data, aes(x = today)) +
+  geom_histogram(binwidth = 1, fill = "red", color = "black") +
+  labs(title = "Dates de l'enquête",
+       x = "Date de l'enquête",
+       y = "Nombre d'observations")
+
+# Tableau récapitulatif des dates
+tbl_summary(data,
+            missing = "no",
+            include = c(submissiondate, start, today),
+            label=list(submissiondate~ "Date de soumission", 
+                         start~ "Date de début de l’enrégistrement",
+                       today~ "Date de l’enquête")) %>% 
+  modify_header(label ~ "**Date**") %>%
+  italicize_labels() %>%
+  as_flex_table()
+```
+
+**Analyse** :
+
+• La date de soumission varie du 17 mai 2021 au 21 juin 2021 : Cela indique que les informations de l'enquête ont été soumises sur une période d'environ un mois.
+
+• La date de début d'enregistrement varie du 6 mai 2021 au 20 juin 2021 : Cela signifie que l'enregistrement des informations pour l'enquête a commencé à partir du 6 mai 2021 et s'est poursuivi jusqu'au 20 juin 2021.
+
+• La date de l'enquête varie également du 6 mai 2021 au 20 juin 2021 : Cela indique que les enquêtes ont été menées sur la même période que l'enregistrement des informations.
+
+## 3 Cartographie
+
+-   Transformation du data.frame en données géographiques dont l'objet est nommé projet_map :
+
+```{r message=FALSE}
+# Chargement des données de la carte du Sénégal
+# Nous lisons le fichier contenant la carte du Sénégal et le stockons 
+# dans la variable "senegal"
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+
+# La fonction st_as_sf convertit l'objet "projet" en objet 
+# sf (spatial feature) en spécifiant les coordonnées GPS à utiliser
+projet_map = st_as_sf(projet, coords = c("gps_menlongitude", "gps_menlatitude"), crs=st_crs(senegal), agr = "constant")
+
+# Jointure des données du projet avec la carte du Sénégal
+projet_map = st_join(projet_map, senegal)
+
+```
+
+-   Représentation spatiale des PME suivant le sexe:
+
+```{r message=FALSE}
+# Création de la première carte avec la répartition des PME suivant le sexe
+ggplot() +
+  geom_sf(data=senegal)+
+  geom_sf_text(data=senegal, aes(label=NAME_1))+
+  geom_sf(data=projet_map, aes(color=sexe), size=2)+
+  scale_color_manual(values=c("blue", "red"))+
+  labs(title = "Répartition des PME suivant le sexe",
+       subtitle = "Carte du Sénégal",
+       color = "Sexe") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+  coord_sf(datum = NA)+
+  annotation_scale(location = "bl", text_col = "black")+
+  annotation_north_arrow(location = "tl")
+```
+
+-   Représentation spatiale des PME suivant le niveau d'instruction:
+
+```{r message=FALSE}
+# Renommons la variable q25 en Niveau_instruction
+projet_map <- projet_map %>% rename(Niveau_instruction = q25)
+
+# Création de la deuxième carte avec la répartition des PME  
+# suivant le niveau d'instruction
+ggplot() +
+  geom_sf(data=senegal)+
+  geom_sf_text(data=senegal, aes(label=NAME_1))+
+  geom_sf(data = projet_map, aes(color = Niveau_instruction), size =3) +
+  scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+  labs(title = "Répartition des PME suivant le niveau d'instruction",
+       subtitle = "Carte du Sénégal") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+  coord_sf(datum = NA)+
+  annotation_scale(location = "bl", text_col = "black")+
+  annotation_north_arrow(location = "tl")
+
+```
+
+-   Analyse spatiale de notre choix
+
+```{r}
+
+```
+
+# Partie 2
+
+## 1 Nettoyage et gestion des données
+
+-   Chargement des données et effectuons le nettoyage initial
+
+```{r}
+# Chargement les données
+feuille1 <- read_excel("Bases/Base_Partie 2.xlsx", sheet = 1)
+
+# Renommons la variable "country_destination" en "destination" et 
+# définissons les valeurs négatives comme manquantes
+feuille1 <- feuille1 %>%
+  rename(destination = country_destination) %>%
+  mutate(destination = ifelse(destination < 0, NA, destination))
+```
+
+-   Création d'une nouvelle variable contenant des tranches d'âge de 5 ans
+
+```{r}
+# Imputons la valeur abérante par la médiane
+# Calculer la médiane des valeurs non aberrantes (différentes de
+# 999) dans la variable "age"
+median_age <- median(base$age[base$age != 999], na.rm = TRUE)
+
+# Remplacer les valeurs 999 par la médiane calculée dans la variable "age"
+base$age[base$age == 999] <- median_age
+
+
+feuille1 <- feuille1 %>%
+  mutate(tranche_age = cut(age, breaks = seq(0, max(age), by = 5), include.lowest = TRUE))
+```
+
+-   Création d'une nouvelle variable contenant le nombre d'entretiens réalisés par chaque agent recenseur :
+
+```{r}
+feuille1 <- feuille1 %>%
+  group_by(enumerator) %>%
+  mutate(nombre_entretiens = n()) %>%
+  ungroup()
+
+```
+
+-   Création d'une nouvelle variable qui affecte aléatoirement chaque répondant à un groupe de traitement (1) ou de contrôle (0)
+
+```{r}
+feuille1 <- feuille1 %>%
+  mutate(groupe = {set.seed(123); sample(c(0, 1), size = n(), replace = TRUE)})
+```
+
+-   Fusion de la taille de la population de chaque district (feuille 2) avec l'ensemble de données (feuille 1) :
+
+```{r}
+# Charger les données de la deuxième feuille
+feuille2 <- read_excel("Bases/Base_Partie 2.xlsx", sheet = 2)
+
+# Fusion
+feuille1 <- feuille1 %>%
+  left_join(feuille2, by = "district")
+
+```
+
+-   Calcul la durée de l'entretien et indiquer la durée moyenne de l'entretien par enquêteur :
+
+```{r}
+feuille1 <- feuille1 %>%
+  mutate(duree_entretien = endtime - starttime) %>%
+  group_by(enumerator) %>%
+  mutate(duree_moyenne_entretien = mean(duree_entretien)) %>%
+  ungroup()
+
+```
+
+-   Renommage de toutes les variables de l'ensemble de données en ajoutant le préfixe "endline\_" à l'aide d'une boucle :
+
+```{r}
+copie = feuille1
+feuille1 <- feuille1 %>%
+  rename_all(~paste0("endline_", .))
+```
+
+## 2 Analyse et visualisation des données
+
+-   Création d'un tableau récapitulatif contenant l'âge moyen et le nombre moyen d'enfants par district :
+
+```{r}
+feuille1 %>%
+  tbl_summary(
+    by = endline_district,
+    include = c("endline_age", "endline_children_num"), 
+    type = list(endline_children_num = "continuous"),
+    statistic = all_continuous() ~ "{mean}",
+    label=list( endline_age~ "Age moyen", 
+                endline_children_num ~ "Nombre moyen d'enfants")
+    ) %>%
+  add_overall() %>%
+  modify_header(label ~ "") %>%
+  modify_spanning_header(all_stat_cols() ~ "**District**") %>%
+  bold_labels() %>%
+  as_flex_table() %>%
+  fontsize(size = 10) %>%
+  width(width = 0.6)
+```
+
+-   Testons si la différence d'âge entre les sexes est statistiquement significative au niveau de 5 %:
+
+```{r}
+### différence d'âge entre les sexe
+feuille1 %>% tbl_summary(
+include = c(endline_age_pur),
+by = endline_sex,
+statistic = ~"{mean}",
+label = list(endline_age_pur ~ "Age du répondant"),
+digits = ~ 1
+)%>% bold_labels() %>% italicize_levels() %>%
+add_difference() %>%
+modify_header(
+list(
+all_stat_cols() ~ "{level} \n {n}, ({style_percent(p)}%)"
+)
+)
+```
+
+-   Création d'un nuage de points de l'âge en fonction du nombre d'enfants:
+
+```{r}
+#filtred <- copie %>% filter(age!600)
+ggplot(copie, aes(x = children_num, y = age)) +
+  geom_point(size = 4, alpha = 0.7, color = "#0072B2") +
+  labs(x = "Nombre d'enfants", y = "Âge") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 6) ,breaks = seq(0, 6, 1)) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 5))
+```
+
+-   Estimation de l'effet de l'appartenance au groupe de traitement sur l'intention de migrer:
+
+```{r}
+library(nnet)
+regm <- multinom(intention ~ groupe ,data = copie)
+tbl <- tbl_regression(regm, exponentiate = TRUE)
+tbl
+
+library(GGally)
+ggcoef_multinom(
+  regm,
+  exponentiate = TRUE)
+
+library(effects)
+plot(allEffects(regm))
+```
+
+-   Création d'un tableau de régression avec 3 modèles:
+
+```{r}
+# Modèle A : Modèle vide - Effet du traitement sur les intentions
+modele_A <- multinom(intention ~ groupe, data = copie)
+tableau_A <- tbl_regression(modele_A)
+
+# Modèle B : Effet du traitement sur les intentions en tenant compte de l'âge et du sexe
+modele_B <- multinom(intention ~ groupe + age + sex, data = copie)
+tableau_B <- tbl_regression(modele_B)
+
+# Modèle C : Identique au modèle B mais en contrôlant le district
+modele_C <- multinom(intention ~ groupe + age + sex + district, data = copie)
+
+ggcoef_multinom(
+  modele_C,
+  exponentiate = TRUE)
+
+plot(allEffects(modele_C))
+
+
+tableau_C <- tbl_regression(modele_C)
+
+# Création du tableau récapitulatif des résultats des trois modèles
+tableau_final <- tbl_merge(
+  list(tableau_A, tableau_B, tableau_C),
+  tab_spanner = c("Modèle A","Modèle B","Modèle C"))%>%
+  modify_header(label ~ "") %>%
+  as_flex_table()
+
+# Affichage du tableau final
+tableau_final
+```
+
+# Partie 3:

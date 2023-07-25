@@ -1,0 +1,207 @@
+---
+title: "Untitled"
+author: "Palo"
+date: "`r Sys.Date()`"
+output: 
+    word_document: 
+      reference_doc: Version.docx
+      toc: yes
+      fig_caption: yes
+toc-depth: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+getwd()
+  setwd("C:\\Users\\HP\\Desktop\\dt")
+  getwd()
+```
+
+
+```{r}
+## Importation de la base
+library(readxl)
+Data_MCA <- read_excel("Data_MCA.xlsx",
+              sheet = "Sheet1",
+              range = NULL,
+              col_names = TRUE,
+              col_types = NULL,
+              na = "")
+
+  Data_MCA1 <- Data_MCA[1:50, 2:6]
+
+
+
+```
+
+
+
+
+\includepdf{page.pdf}
+
+
+
+# Introduction
+
+Pour rédiger un document destiné à être publié (rapport, article, mémoire, thèse, etc.), plusieurs outils s’offrent à nous. En science, deux des outils les plus utilisés pour la création de documents sont Word et LaTeX. Voyons d’abord la distinction entre ces deux outils.
+
+Word :
+En Word, le contenu et la mise en forme du document ne font qu’un. Le fichier dans lequel nous travaillons pour créer le document est directement le document final.
+
+LaTeX :
+Avec LaTeX, le contenu est dissocié de la mise en forme. Le fichier dans lequel nous travaillons, portant l’extension .tex, n’est pas le document final. Nous devons compiler le fichier .tex afin d’obtenir ce document final (.pdf ou autre).
+
+R Markdown est une extension qui permet de générer de manière dynamique et automatique en mélangeant texte mis en forme et résultats produits par du code R.il nous permet de générer des documents sous format HTML, PDF, MS 
+Pour plus d'informations sur R Markdown, veuillez consulter <http://rmarkdown.rstudio.com>.
+
+
+## A quoi sert Rmarkdown
+
+Tout comme HTML ou LaTeX, Markdown est un langage de balisage. Contrairement aux deux premiers
+langages, Markdown se veut être facile à lire par les personnes. Les balises ne doivent pas être abstraites,
+mais proches de leur véritable signification.to/bild.png)
+
+
+
+#  Création d’un document R Markdown en RSudio
+
+Un bon outil pour rédiger et compiler des documents R Markdown est RStudio, qui est d’ailleurs derrière le développement de cet outil de programmation lettrée. En RStudio, nous pouvons créer un nouveau document R Markdown (extension .Rmd) par le menu :
+
+« File > New File > R Markdown… »
+Une fenêtre s’ouvre alors. Nous devons spécifier quelques informations à propos de notre fichier.
+
+Le menu de gauche sert à indiquer quel type de produit final nous voulons créer :
+-un document,
+
+-une présentation,
+
+_un document avec composantes interactives (Shiny) ou
+
+_un document suivant un certain modèle prédéfini (p. ex. document GitHub ou vignette de package).
+Dans la partie de droite de la fenêtre, nous spécifions :
+le titre du document,
+
+le nom de l’auteur,
+
+le format préféré pour le fichier final.
+En cliquant sur OK, un fichier est créé. Il devrait avoir l’allure suivante :
+
+![](C:/Users/HP/Desktop/dt/docuexemple.png)
+
+
+##  Entête d’un fichier R Markdown
+
+Un fichier R Markdown débute pratiquement toujours par un entête encadré de deux lignes contenant uniquement trois tirets (---).
+
+Les métadonnées de base sont :
+
+title : le titre du document,
+
+author : le nom de l’auteur,
+
+date : la date de publication du document.
+
+
+![](C:/Users/HP/Desktop/dt/entete.png)
+Formats du document final :
+
+HTML;
+PDF (à la condition d’avoir un compilateur LaTeX[miktex pour les utilisateurs  Windows]);
+Word.
+
+## Description d'un chunk de R
+
+Sur R markdown, il existe une partie de saisie de texte et une partie reservée aux codes.
+
+![](C:/Users/HP/Desktop/dt/chunk.png)
+ Options de blocs de code R :
+Les options de blocs de code R les plus usuelles sont les suivantes :
+
+.eval (TRUE par défaut, ou FALSE) : détermine si le code R doit être évalué ou non,
+.echo (TRUE par défaut, ou FALSE) : détermine si le code R doit être affiché ou non,
+.results ('markup' par défaut, ou 'hide' ou 'hold' ou 'asis') :
+.détermine comment les sorties doivent être affichées,
+.error (FALSE par défaut, ou TRUE) : détermine si les messages d’erreur doivent être affichés.
+.warning (TRUE par défaut, ou FALSE) : détermine si les messages d’avertissement doivent être affichés.
+
+
+##  Quelques techniques de mise en forme
+
+Comment mettre un texte en gras, italique, souligné
+• Pour forcer le retour à la ligne, il faut mettre "deux espaces vides à la fin d’une ligne.
+• Pour écrire en gras il faut mettre deux étoiles entre le mot souhaité
+• Pour mettre un texte en italique, on le met entre deux tirets de huit
+Il est impossible de souligner un texte en Rmarkdown (Source: Digital guide, IONOS)
+
+![](C:/Users/HP/Desktop/dt/miseforme.png)
+
+### Comment générer les différents niveau de titre
+
+Pour insérer un nouveau titre, nous utilisons ##, entre l’élément que nous voulons en titre, par exemple :
+
+“#” Titre 1
+
+“##” Titre 2
+
+“###” Titre 3
+
+### Comment inserer une imagedans un document Rmardown
+
+
+À partir d’un fichier image :
+Il est possible d’intégrer une figure provenant d’un fichier image en utilisant la syntaxe Markdown suivante :
+
+
+
+```{r}
+
+```
+
+## Intégration de tableaux
+
+Il existe une syntaxe Markdown pour créer des tableaux. Par exemple, le code Markdown suivant :
+
+
+| Droite | Gauche | Défaut | Centré |
+|-------:|:-------|--------|:------:|
+| 12 | 12 | 12 | 12 |
+| 123 | 123 | 123 | 123 |
+| 1 | 1 | 1 | 1 | 
+
+Table: Premier exemple de tableau
+
+
+
+
+## Mise en forme des tabeaux sortis sur R
+
+
+###Affichage d'un tableau 
+
+D'habitude les tableaux de sortis par R ou les a  affichages de certains  resultats neccessitent un travail d'arrangement.Pour cela, il faut parametrer de sorte que les tableaux fournis par le document final Rmardown soit utilisable.
+Le package kableExtra est utilisé pour ces cas.
+Par exemple:
+
+
+
+```{r cars,warning=FALSE}
+# Chargement des libraries
+library(knitr)
+library(kableExtra)
+
+
+library(dplyr)
+head( Data_MCA1) 
+```
+
+
+une autre manière de disposer les tableaux en utilisant
+
+
+```{r}
+
+head(Data_MCA1) 
+
+```
+
+

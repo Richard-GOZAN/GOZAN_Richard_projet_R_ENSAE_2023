@@ -1,0 +1,453 @@
+---
+output:
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    fig_caption: yes
+  word_document: default
+  html_document:
+    df_print: paged
+outp ut:
+  pdf_document:
+    toc: no
+    fig_caption: yes
+    number_sections: yes
+header-includes: 
+  - \usepackage{pdfpages}
+  - \usepackage{tcolorbox}
+  - \usepackage{graphicx}
+  - \usepackage{setspace}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+library(tinytex)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\includepdf{page}
+
+\newpage
+
+\setstretch{1.5}
+
+\renewcommand{\contentsname}{\textcolor{blue}{Table des matières}}
+
+\textcolor{blue}{\tableofcontents}
+
+\newpage
+
+\textcolor{blue}{\section*{Introduction}\addcontentsline{toc}{section}{Introduction}}
+
+Dans les années 1970, la dette du tiers-monde est devenue un problème
+majeur. Les PED avaient besoin de financement pour leur
+industrialisation et ont contracté des dettes auprès d'États (dont
+beaucoup de créanciers sont réunis au sein du Club de Paris, créé en
+1956), d'institutions internationales (FMI, Banque mondiale) ou
+d'organismes de prêts privés (dont plusieurs sont réunis au sein du Club
+de Londres, créé en 1976). Cependant, une partie de cette dette a été
+utilisée pour des dépenses somptuaires plutôt que pour des projets de
+développement. De plus, dans les années 1980, la crise de la dette a
+éclaté en raison de la hausse des taux d'intérêt et de la chute des
+cours des matières premières, conduisant certains pays à se déclarer en
+cessation de paiement. Depuis 1996, une procédure d'annulation de la
+dette a été lancée, mais l'annulation de la dette des PED soulève des
+questions quant à sa pertinence. Les politiques d'ajustement structurel
+mises en place par le FMI et la Banque mondiale pour aider les PED à
+rembourser leurs dettes, ont connu des échecs et ont souvent contribué à
+l'enfoncement du pays dans le sous-développement et la pauvreté.
+
+Selon Presbitero (2010), les raisons des échecs dans la zone UEMOA
+peuvent être attribuées à des facteurs externes tels que les chocs
+pétroliers, les variations des cours des matières premières et les
+fluctuations des taux d'intérêt, ainsi qu'à des facteurs internes tels
+que les guerres, les déficits budgétaires et la mauvaise gouvernance.
+Cette dynamique d'endettement s'est accompagné par une baisse du rythme
+de la croissance économique dans la zone. Selon Koffi et al (2017),
+l'initiative PPTE a entraîné une forte baisse du taux d'endettement dans
+les pays de l'UEMOA, passant d'environ 90% à 42% sur les périodes
+1989-2002 et 2003-2012. Cependant, cette réduction n'a pas été suivie
+d'une croissance suffisamment forte pour atteindre l'objectif de 7%. De
+plus, Avec l'apparition de la nouvelle maladie (COVID -19), la situation
+s'est dégradée et l'économie des pays de l'union a chuté à cause des
+plans de riposte effectuée par ces pays.
+
+Il est donc légitime de se demander si l'endettement extérieur, qui est
+supposé financer le développement et générer de la croissance, est
+devenu un frein au développement. Dès lors, il nécessaire d'étudier la
+relation entre endettement extérieur et croissance économique.
+
+Notre travail se compose de trois sections qui présentent d'abord les
+faits stylisés, ensuite une revue de littérature sur la relation entre
+l'endettement et la croissance et enfin les études empiriques sur effet
+de non linéarité de l'endettement sur la croissance.
+
+\newpage
+
+\textcolor{blue}{\section{Faits stylisés relatifs aux économies des pays de l'UEMOA}}
+
+Les perturbations économiques externes, notamment la crise de la dette
+suivie des annonces de cessation de paiement de pays tels que le
+Mexique, ont également eu un impact sur les pays membres de l'Union
+Economique et Monétaire Ouest Africaine (UEMOA). Dans la zone UEMOA, le
+ratio dette sur PIB, est passé d'une moyenne de 16,37% en 1970 à 36,17%
+en 1980 avec 85,31% au Togo, 42,52% en Côte d'Ivoire et 37,17% au Mali.
+Le service de la dette extérieure absorbe une part de plus en plus
+importante des recettes d'exportation: entre 1981 et 1985, la moyenne en
+zone UEMOA était de 15,80% contre 4,31% en 1974. En 1986, 17,31% des
+recettes d'exportation de la zone étaient consacrés au service de la
+dette.
+
+Au milieu des années 80, les difficultés de trésorerie face aux besoins
+de financements grandissants ont astreint les Etats de l'UEMOA à
+recourir massivement aux sources de financements extérieurs, entraînant
+ainsi une augmentation du rapport de la dette publique au PIB. En 1985,
+la moyenne du taux d'endettement extérieur a atteint dans l'ensemble des
+pays de l'UEMOA un niveau record, soit environ 74,57% du PIB. Et l'on
+constate sur la période de 1986 à 1994 une augmentation du rapport de la
+dette publique au PIB, allant de 70,55% à plus de 100% (108,59% en 1994)
+pour ensuite passer, après la dévaluation du Franc CFA survenue en
+janvier 1994, à 88% du PIB. Cependant, toute la décennie 90 aura été
+marquée par une forte absorption du PIB par la dette dans la zone UEMOA
+: jusqu'en 2001, la dette extérieure de l'UEMOA représentait plus de 70%
+du PIB.
+
+En 2021, le taux d'endettement de l'UEMOA est estimé à 56,1% du PIB
+selon le FMI, soit une augmentation de 5 % du PIB par rapport à 2020 et
+de 11,7 % du PIB par rapport à 2019. Cette évolution se justifie en
+grande partie par la hausse des besoins de financement engendrée par la
+pandémie à COVID-19. Dans l'Union, la Guinée Bissau (80,7% ; risque de
+surendettement élevé selon le Fonds) et le Sénégal (75,7%) dépassent le
+plafond communautaire de l'UEMOA de 70% du PIB tandis que le Togo s'en
+rapproche (63,8% du PIB). Si la part de la dette extérieure demeure la
+plus importante (33,7% du PIB en 2021 contre 22,4% pour la dette
+domestique), elle a néanmoins enregistré une diminution de 0,9% par
+rapport à 2020, traduisant la volonté des Etats d'accroître la part des
+ressources issues du marché régional.
+
+Différentes sources, telles que les statistiques officielles de la
+BCEAO, la base de données du FMI sur la dette extérieure (EDS), les
+indicateurs mondiaux de développement (WDI) et les données des
+perspectives économiques (WEO) du FMI, présentent les faits saillants
+concernant la dette extérieure.
+
+\newpage
+
+En se basant sur cette constatation de la base de BCEAO, on remarque que
+les années 2012, 2013, 2014, 2015, 2016 et 2017 sont marquées d'un
+niveau de croissance et d'investissement élévé contrairement aux années
+2001, 2002, 2003 et 2004 qui marquent un niveau faible de croissance et
+d'investissement accompagné d'un endettement élévé . Par ailleurs, les
+années 2006, 2007, 2008, 2009, 2010 et 2011 présentent un niveau
+d'endettement et de croissance pratiquement identique et relativement
+bas contrairement aux années 2021 et 2022.
+
+\textcolor{blue}{\section{Revue de la littérature : relation entre l’endettement et la croissance}}
+
+\textcolor{blue}{\subsection{Les Fondements théoriques de l'analyse classique et keynésienne}}
+
+Dans cette section, nous examinerons les principaux arguments théoriques
+ainsi que quelques études empiriques portant sur les effets de
+l'endettement.
+
+Ainsi, selon la théorie keynésienne traditionnelle de l'évolution
+conjoncturelle déterminée par la demande, l'impact des déficits,
+autrement dit l'effet d'une augmentation de la dette publique sur la
+croissance est positif. Un déficit budgétaire peut alors constituer un
+facteur de relance économique et donc de création d'emploi. Le déficit
+auquel correspond l'emprunt stimule la demande et permet d'alléger le
+coût de son remboursement. En ce sens, même si dans le cas d'une
+sous-activité, une augmentation des dépenses entièrement financée par
+les impôts (sans impact sur la dette publique) entraîne une hausse
+équivalente du PIB (« Balanced Budget Multiplier »). Une majoration des
+dépenses financée par le marché des capitaux (endettement public) peut
+avoir un impact plus fort sur la croissance étant donné que les charges
+fiscales ne freinent plus la demande. En d'autres termes : la
+corrélation entre dette publique et croissance est clairement positive.
+
+La théorie néo-classique démontre que l'endettement a des effets
+négatifs durables et devrait être considérée avec prudence. Elle devrait
+représenter un outil d'équilibrage entre les recettes et les dépenses à
+court terme et non un outil d'investissement. La théorie néo-classique
+considère qu'une politique fiscale basée sur la demande est inefficace
+et provoque uniquement des effets inflationnistes. Les théories
+néo-classiques concluent qu'un endettement de l'État n'a pas de raison
+d'être, car il est inefficace (Barro, 1974).
+
+Selon Ricardo (1817), à travers l'équivalence ricardienne, montre que
+les citoyens voient dans l'emprunt un impôt différé dans le temps et se
+comportent comme s'ils sont contraints de payer ultérieurement un impôt
+pour rembourser cet emprunt. Selon cette approche, si les dépenses
+étatiques sont financées à crédit cela entraîne une augmentation du taux
+d'intérêt décourageant les investissements privés (effet d'éviction).
+
+\textcolor{blue}{\subsection{Survol des résultats empiriques : impact de la dette publique, réduction de la dette et croissance économique}}
+
+\textcolor{blue}{\subsubsection{Impact de la dette publique sur la croissance économique}}
+
+La dette publique a des effets ambivalents sur l'économie, variant en
+fonction du contexte économique.
+
+-   **Impact négatif**
+
+Les arguments théoriques en faveur de la réduction de la dette
+extérieure des pays en développement reposent sur l'idée que ces pays
+font face à une situation de surendettement, similaire à celle d'une
+entreprise insolvable sans protection légale de la faillite, selon Sachs
+(1989). Dans ce cas, les créanciers adoptent des comportements
+antagonistes pour récupérer la valeur restante des actifs, ce qui nuit à
+la survie de l'entreprise. Sachs le démontre à l'aide d'un modèle
+intertemporel à deux périodes, dans lequel le service de la dette agit
+comme une taxe décourageante à la production. Selon lui, il existe un
+niveau d'endettement optimal au-delà duquel tout endettement
+supplémentaire entraîne une réduction significative de l'investissement,
+incitant ainsi le débiteur à ne pas rembourser la dette. Cela signifie
+que les emprunts supplémentaires réduisent la probabilité de
+remboursement, d'où la notion de "fardeau virtuel de la dette" ou "debt
+overhang". La théorie du surendettement considère qu'une dette élevée
+difficile ou impossible à rembourser exerce des effets décourageants sur
+le pays débiteur, l'empêchant de mettre en œuvre des réformes favorables
+à l'investissement et à la croissance économique.
+
+Les premiers à examiner l'impact de l'incertitude des paiements du
+service de la dette sur la croissance économique sont Oks et Van
+Wijnbergen (1994). Ils ont conclu, en se basant sur le cas du Mexique,
+que l'instabilité des paiements du service de la dette a un effet
+négatif sur l'investissement privé et donc sur la croissance économique.
+
+Cohen (1995) a montré que c'est le service de la dette lui-même qui
+explique le ralentissement de l'investissement, et non plus le niveau
+total de la dette. Agénor et Montiel (1999) ont démontré qu'une
+augmentation future du service de la dette peut inciter les
+gouvernements à adopter des politiques inflationnistes ou à éviter de
+mettre en œuvre certaines réformes. De plus, Dijkstra et Hermes (2001)
+ont montré que l'incertitude quant au montant réellement payé du service
+de la dette peut constituer un signal négatif pour les investisseurs,
+retardant ainsi leur décision d'investir.
+
+Swapan et al. (2007), montrent que le surendettement diminue
+drastiquement la croissance des pays Latino-Américains, alors que
+l'impact était faiblement négatif dans les pays asiatiques.
+
+-   **Impact positif**
+
+Selon Diamond (1989), l'endettement peut avoir plusieurs effets positifs
+sur l'économie, notamment en contribuant à diminuer la suraccumulation
+du capital, en remédiant aux contraintes de liquidité auxquelles font
+face certains agents économiques, en réduisant les pertes liées à une
+fiscalité non forfaitaire, en favorisant le développement des capacités
+d'intermédiation financière de l'économie, et surtout en aidant au
+financement des dépenses publiques, ce qui peut contribuer à la
+croissance économique.
+
+Devarajan et al. (1996) ont trouvé une corrélation positive entre les
+dépenses publiques de consommation et la croissance économique, ainsi
+qu'une relation inverse entre cette dernière et l'investissement public.
+Les auteurs expliquent ce résultat par une mauvaise allocation des
+ressources budgétaires en faveur des dépenses en capital au détriment
+des charges d'entretien des infrastructures. C'est ainsi qu'ils ont
+développé les notions de dépenses publiques productives et improductives
+
+\textcolor{blue}{\subsubsection{Réduction de la dette et croissance économique}}
+
+Le surendettement se réfère généralement à une situation où un pays
+accumule une dette extérieure importante, ce qui a des conséquences
+néfastes sur l'investissement et la croissance économique.
+
+Corden (1988) démontre que dans certaines circonstances, un allégement
+de la dette décidé de manière exogène par les créanciers peut augmenter
+les incitations du débiteur à entreprendre des réformes et éviter le
+risque de défaut de paiement, qu'il assimile à un "allégement endogène",
+c'est-à-dire décidé par le débiteur.
+
+Krugman (1988) a également développé cette idée en montrant que
+l'augmentation de l'incitation d'un pays surendetté à entreprendre des
+réformes économiques peut améliorer la valeur des créances des
+créanciers sur le marché secondaire, car les perspectives de
+remboursement du débiteur seront meilleures. Ainsi, l'effet potentiel
+d'un découragement des réformes économiques pourrait être plus grave
+pour les pays à faible revenu et très endettés, où les distorsions
+structurelles profondes et la mauvaise gestion macroéconomique
+(combinées à un accès limité aux marchés étrangers de capitaux privés)
+entravent déjà une réforme soutenue (Ndulu, 1995 ; Elbadawi, 1996)
+
+Bien que certains soutiennent l'idée de la nécessité d'alléger la dette
+en raison de ses effets sur la croissance et la capacité de
+remboursement des pays à faible revenu, la pertinence de cette stratégie
+a été relativisée par certains auteurs. Ces derniers estiment que
+l'accumulation de la dette n'est pas la cause, mais la conséquence d'une
+faible croissance, comme le soutiennent Bulow et Rogoff (1990). Ils
+affirment également que la réduction de la dette ne serait pas
+suffisante pour restaurer l'investissement et la croissance, comme l'ont
+souligné Easterly (2002) et Asiedu (2003). Ainsi, Bulow et Rogoff (1990)
+soutiennent que la dette élevée est plutôt un symptôme d'une faible
+croissance, qui résulte d'une mauvaise gestion macroéconomique.
+
+Clements et al. (2003), quant à eux, montrent que le service de la dette
+n'a pas d'effet direct sur le taux de croissance économique, mais qu'il
+agit par le biais de l'effet d'éviction du service de la dette sur les
+dépenses publiques. En effet, une réduction du service de la dette en
+pourcentage du PIB de 8,7% à 3% augmentera l'investissement public de
+0,7% à 0,8%, ce qui entraînera une augmentation du taux de croissance
+économique de 0,1% à 0,2%.
+
+Ce bref aperçu met en évidence que les liens entre la dette extérieure,
+la croissance économique d'une part, et la réduction de la dette
+extérieure et la croissance économique d'autre part, sont ambigus d'un
+point de vue théorique. Cependant, il est clair que l'accumulation de
+dettes importantes entrave la croissance. En effet, lorsque la dette
+continue de croître au point de dépasser les capacités de remboursement
+du pays débiteur, le coût de son service dissuade les investissements
+intérieurs et extérieurs, ce qui pénalise la croissance.
+
+Jusqu'à présent, ces études ont principalement mis en lumière l'impact
+d'une dette publique élevée sur la croissance, sans toutefois examiner
+en détail la nature du lien entre dette publique et croissance
+économique.
+
+\textcolor{blue}{\section{Étude empirique : effet de non linéarité de l’endettement sur la croissance}}
+
+Le lien entre dette publique et croissance économique a fait l'objet
+d'une série d'études empiriques. Dans le cas de notre études, nous
+allons les classer en fonction de deux catégories de pays (pays en
+développement et pays de l'UEMOA).
+
+-   **Pays en développement**
+
+Adam et Bevan (2005) ont étudié la relation entre le déficit budgétaire
+et la croissance du PIB par habitant dans un échantillon de 45 pays en
+développement, incluant 3 pays de l'UEMOA (Mali, Sénégal, Togo), sur la
+période 1970-1999, en utilisant un modèle à générations imbriquées.
+Leurs résultats montrent que l'effet du déficit sur la croissance dépend
+du niveau initial du déficit et du niveau de la dette publique. Lorsque
+le déficit est inférieur ou égal à 1,5% du PIB, une augmentation du
+déficit a un effet positif sur la croissance, estimé à 0,264. Cependant,
+ce multiplicateur est réduit de 0,024 par an si le niveau de la dette
+publique extérieure dépasse 60% du PIB. En revanche, lorsque le déficit
+dépasse le seuil optimal de 1,5% du PIB, une politique expansionniste
+réduit la croissance du PIB par habitant de 0,209. Dans ce cas, une
+dette publique extérieure supérieure à 60% du PIB aggrave dans la même
+proportion (0,024) l'effet négatif du déficit sur la croissance.
+
+Chakroun et al. (2013) ont identifié un seuil d'endettement optimal de
+39,5% du PIB après avoir analysé la relation non linéaire entre le
+niveau de la dette publique et la croissance économique dans un
+échantillon de quatre pays MENA (Tunisie, Turquie, Maroc et Égypte) en
+utilisant la méthodologie PSTR sur la période 1970-2010.
+
+De même, Lonzo Lubu (2014) a mis en évidence les effets non linéaires de
+la politique budgétaire sur l'écart de production en République
+Démocratique du Congo, sur la période 1960-2013, en utilisant un modèle
+à seuil endogène (Hansen, 2000). Les résultats montrent qu'un seuil
+optimal de dette extérieure publique de 112% du PIB a été identifié.
+Au-delà de ce seuil, une augmentation du stock de dette publique
+extérieure par rapport au PIB devient préjudiciable à l'activité
+économique.
+
+Faye et Thiam (2015) ont utilisé un modèle à générations imbriquées pour
+examiner l'effet de l'endettement public sur plusieurs variables
+macroéconomiques, notamment la consommation, le PIB, l'épargne, les
+recettes budgétaires, l'investissement et la dynamique du capital au
+Sénégal. Les résultats montrent qu'une augmentation de 10% de la dette
+publique a un effet positif sur les variables macroéconomiques, mais
+détériore le déficit de la balance courante. Pour être efficace, il
+faudrait intégrer un niveau minimal de dette publique de 65% du PIB dans
+le processus d'accumulation du capital. Une augmentation de 10% de la
+dette interne entraîne une récession. En outre, une augmentation des
+dépenses publiques financées par emprunt entraîne une augmentation de la
+dette publique léguée aux générations futures de 15% et une hausse
+d'environ 2% de la consommation future.
+
+-   **Pays de l'espace UEMOA**
+
+Dans le contexte des pays de l'espace UEMOA, Tanimoune et al. (2008) ont
+utilisé un modèle à seuil endogène développé par Hansen (1996, 1999)
+pour étudier l'effet du solde budgétaire primaire structurel de base sur
+l'écart de production, en fonction du ratio de la dette extérieure
+publique par rapport au PIB. Ils ont estimé un seuil d'endettement
+critique de 83% pour sept pays de la zone UEMOA sur la période
+1986-2002.
+
+De même, Wade (2015) a évalué l'impact de la dette publique totale en
+pourcentage du PIB sur le taux de croissance du PIB par habitant en
+utilisant un modèle PSTR (Panel Smooth Transition Regression Model) et
+la méthode GMM pour les huit pays de l'UEMOA sur la période 1980-2011.
+Les résultats obtenus avec la méthode GMM indiquent un seuil optimal de
+dette publique de 48,8% du PIB, tandis que le modèle PSTR donne un seuil
+critique de 49,83% du PIB.
+
+En 2017, Koffi et al ont étudié l'influence de la politique budgétaire
+sur l'évolution de l'activité économique dans la zone UEMOA, en tenant
+compte du niveau de la dette extérieure, en utilisant le modèle PSTR sur
+la période 1989-2012. Leurs résultats montrent qu'un seuil critique de
+48% du PIB a été estimé, au-dessus duquel la dette a un effet négatif et
+significatif sur l'efficacité de la politique budgétaire. De plus, leurs
+résultats mettent en évidence une hétérogénéité entre les pays et une
+variation d'une année à l'autre.
+
+\newpage
+
+\textcolor{blue}{\section*{Conclusion}\addcontentsline{toc}{section}{Conclusion}}
+
+In fine, il est évident que la relation entre l'endettement et la
+croissance économique est étroite et dépend de plusieurs facteurs tels
+que la stabilité macroéconomique et la gouvernance. Les études mettent
+en évidence les conséquences positives et négatives de la dette publique
+sur la croissance économique, avec un seuil critique à prendre en
+compte. De plus, l'effet de l'endettement peut varier en fonction du
+contexte économique spécifique de chaque pays soulignant ainsi
+l'importance de prendre en considération la dynamique économique globale
+ainsi que les politiques budgétaires et fiscales dans l'évaluation de
+l'impact de l'endettement sur la croissance des pays de l'UEMOA.
+
+Il est essentiel d'adopter des approches prudentes et équilibrées en
+matière d'endettement public pour garantir une croissance économique
+soutenable dans ces pays. Bien que certains auteurs puissent défendre
+l'idée que la soutenabilité de la dette a peu d'influence sur la
+croissance économique, Il est toutefois impératif de procéder à une
+réduction de la dette dans certains pays pauvres fortement endettés,
+dans le but de leur offrir la possibilité de lancer leur processus de
+croissance économique. Il est donc crucial de trouver un équilibre entre
+la nécessité de soutenir la croissance économique et de garantir la
+soutenabilité de la dette dans ces pays.
+
+\newpage
+
+\textcolor{blue}{\section*{Bibliographie}\addcontentsline{toc}{section}{Bibliographie}}
+
+Ary Tanimoune, Combes et Plane (2005) " Les effets non linéaires de la
+politique budgétaire : Le cas de l'Union Economique Ouest Africaine "
+CERDI, Etudes et Documents, E 2005.20
+
+Barro R. (1989), "The Ricardian approach to budget deficits", Journal of
+Economic Perspectives, vol.3.
+
+Clement et al. (2003), External Debt, Public Investment and Growth in
+Low-incomes countries, IMF, Working Paper, WP/03/249, december.
+
+Cohen D. (1996), The Sustainability of African Debt, Policy Research
+Working Paper 1621, The World Bank.
+
+Devarajan S., Swaroop V. et Heng-Fu (1996), « The composition of public
+expenditure and economic growth », Journal of Monetary Economics, Vol.
+37, pp. 313 -- 344.
+
+Diamond, J. (1989),Government expenditure and economic growth: an
+empirical investigation IMF Working Paper No. 89/45.
+
+GUISSE Oumou,*Effets de l'Endettement Public sur la Croissance
+Économique en présence de Non Linéarité : Cas des pays de l'Union
+Économique et Monétaire Ouest Africaine*, Thèse de doctorat : sciences
+économiques, UNIVERSITÉ D'ORLÉANS, 2016, 273 p
+
+Krugman, P. (1988), Financing vs forgiving a debt overhang ,Journal of
+developmentEconomics29, 253-268
+
+Sachs J. (1988), "The debt overhang of developping countries", cambridge
+Washington.
+
+SOULAMA Patrice, Les effets non linéaires de la dette public sur la
+croissance Economique dans l'espace UEMOA, Thèse de doctorat : sciences
+économiques, Université Ouaga2, 35p

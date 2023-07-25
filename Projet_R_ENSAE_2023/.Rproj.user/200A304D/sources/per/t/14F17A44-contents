@@ -1,0 +1,173 @@
+# Partie 2
+
+## 1 Nettoyage et gestion des données
+
+
+
+# Chargement les données
+feuille1 <- read_excel("Bases/Base_Partie 2.xlsx", sheet = 1)
+
+# Renommons la variable "country_destination" en "destination" et 
+# définissons les valeurs négatives comme manquantes
+feuille1 <- feuille1 %>%
+  rename(destination = country_destination) %>%
+  mutate(destination = ifelse(destination < 0, NA, destination))
+
+
+
+# Création d'une nouvelle variable contenant des tranches d'âge de 5 ans
+
+
+# Imputons la valeur abérante par la médiane
+
+# Calculons la médiane des valeurs non aberrantes (différentes de 999) dans la variable "age" et remplacer les valeurs 999 par la médiane
+feuille1 <- feuille1 %>%
+  mutate(age = replace(age, age == 999, median(age[age != 999], na.rm = TRUE)))
+
+
+# Créons la variable tranche_age contenant des tranches d'âge de
+# 5 ans
+feuille1 <- feuille1 %>%
+  mutate(tranche_age = cut(age, breaks = seq(0, max(age), by = 5), include.lowest = TRUE))
+
+
+# Création d'une nouvelle variable contenant le nombre d'entretiens réalisés par chaque agent recenseur :
+  
+
+feuille1 <- feuille1 %>%
+  group_by(enumerator) %>%
+  mutate(nombre_entretiens = n()) %>%
+  ungroup()
+
+
+
+# Création d'une nouvelle variable qui affecte aléatoirement chaque répondant à un groupe de traitement (1) ou de contrôle (0)
+
+
+feuille1 <- feuille1 %>%
+  mutate(groupe = {set.seed(123); sample(c(0, 1), size = n(), replace = TRUE)})
+
+
+
+ 
+# Charger les données de la deuxième feuille
+feuille2 <- read_excel("Bases/Base_Partie 2.xlsx", sheet = 2)
+
+# Fusion
+feuille1 <- feuille1 %>%
+  left_join(feuille2, by = "district")
+
+
+# Calcul la durée de l'entretien et indiquer la durée moyenne de l'entretien par enquêteur :
+feuille1 <- feuille1 %>%
+  mutate(duree_entretien = endtime - starttime) %>%
+  group_by(enumerator) %>%
+  mutate(duree_moyenne_entretien = mean(duree_entretien)) %>%
+  ungroup()
+
+
+# Renommons toutes les variables de l'ensemble de données en ajoutant le préfixe "endline\_" à l'aide d'une boucle :
+
+copie = feuille1
+feuille1 <- feuille1 %>%
+  rename_all(~paste0("endline_", .))
+
+
+## 2 Analyse et visualisation des données
+
+
+# Création d'un tableau récapitulatif contenant l'âge moyen et le nombre moyen d'enfants par district :
+  
+feuille1 %>%
+  tbl_summary(
+    by = endline_district,
+    include = c("endline_age", "endline_children_num"), 
+    type = list(endline_children_num = "continuous"),
+    statistic = all_continuous() ~ "{mean}",
+    label=list( endline_age~ "Age moyen", 
+                endline_children_num ~ "Nombre moyen d'enfants")
+  ) %>%
+  add_overall() %>%
+  modify_header(label ~ "") %>%
+  modify_spanning_header(all_stat_cols() ~ "**District**") %>%
+  bold_labels() %>%
+  as_flex_table() %>%
+  fontsize(size = 10) %>%
+  width(width = 0.6)
+
+
+
+
+# Test de différence d'âge entre les sexe
+diff_age <- feuille1 %>% tbl_summary(
+  include = c(endline_age),
+  by = endline_sex,
+  statistic = ~"{mean}",
+  label = list(endline_age ~ "Age du répondant"),
+  digits = ~ 1
+)%>% bold_labels() %>% italicize_levels() %>%
+  add_difference() %>%
+  modify_header(
+    list(
+      all_stat_cols() ~ "{level} \n {n}, ({style_percent(p)}%)"
+    )
+  ) %>%
+  as_flex_table()
+diff_age
+
+
+
+# Création d'un nuage de points de l'âge en fonction du nombre d'enfants:
+ggplot(feuille1, aes(x = endline_children_num, y = endline_age))+
+  geom_point(size = 2, alpha = 0.5, color = "#0072B2") +
+  labs(x = "Nombre d'enfants", y = "Âge") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 6) ,breaks = seq(0, 6, 1)) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 5))
+
+
+# Estimation de l'effet de l'appartenance au groupe de traitement sur l'intention de migrer:
+library(nnet)
+regm <- multinom(intention ~ groupe ,data = copie)
+tbl <- tbl_regression(regm, exponentiate = TRUE)
+tbl
+
+library(GGally)
+ggcoef_multinom(
+  regm,
+  exponentiate = TRUE)
+
+library(effects)
+plot(allEffects(regm))
+
+
+
+## tableau de régression avec 3 modèles
+# Modèle A : Modèle vide - Effet du traitement sur les intentions
+modele_A <- multinom(intention ~ groupe, data = copie)
+tableau_A <- tbl_regression(modele_A)
+
+# Modèle B : Effet du traitement sur les intentions en tenant compte de l'âge et du sexe
+modele_B <- multinom(intention ~ groupe + age + sex, data = copie)
+tableau_B <- tbl_regression(modele_B)
+
+# Modèle C : Identique au modèle B mais en contrôlant le district
+modele_C <- multinom(intention ~ groupe + age + sex + district, data = copie)
+
+ggcoef_multinom(
+  modele_C,
+  exponentiate = TRUE)
+
+plot(allEffects(modele_C))
+
+
+tableau_C <- tbl_regression(modele_C)
+
+# Création du tableau récapitulatif des résultats des trois modèles
+tableau_final <- tbl_stack(
+  list(tableau_A, tableau_B, tableau_C),
+  group_header = c("Modèle A","Modèle B","Modèle C"))%>%
+  as_flex_table()
+
+# Affichage du tableau final
+tableau_fina

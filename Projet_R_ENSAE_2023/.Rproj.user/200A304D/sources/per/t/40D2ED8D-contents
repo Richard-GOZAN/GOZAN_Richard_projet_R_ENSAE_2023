@@ -1,0 +1,512 @@
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+library(gt)
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels() %>%
+as_gt()
+# Résumons les valeurs manquantes par variable
+table_missing <- projet %>%
+summarize_all(~ sum(is.na(.))) %>%
+as_gt()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**", Overall ~ "**Globalement**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels() %>%
+# 3 Cartographie
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**", Overall ~ "**Globalement**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels() %>%
+# 3 Cartographie
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**", Overall ~ "**Globalement**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels() %>%
+c=2
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(Overall ~ "**Global**") %>%
+modify_header(label ~ "**Variables**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**", Overall ~ "**Globalement**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Variables**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Créer un data.frame pour chaque filière
+filiere_arachide <- projet %>% filter(filiere_1 == 1)
+filiere_anacarde <- projet %>% filter(filiere_2 == 1)
+filiere_mangue <- projet %>% filter(filiere_3 == 1)
+filiere_riz <- projet %>% filter(filiere_4 == 1)
+# Fonction pour résumer les statistiques descriptives pour les variables numériques
+summarize_numeric <- function(data) {
+data %>%
+select_if(is.numeric) %>%
+tbl_summary(
+missing = "no",
+label = all_label(.),
+statistic = list(all_continuous() ~ "{mean} ± {sd}")
+)
+}
+# Fonction pour résumer les statistiques descriptives pour les variables de dates
+summarize_dates <- function(data) {
+data %>%
+select_if(is.Date) %>%
+tbl_summary(
+missing = "no",
+label = all_label(.),
+statistic = all_date() ~ "{mean} (Min: {min}, Max: {max})"
+)
+}
+# Créer un tableau global pour chaque filière avec les statistiques descriptives des variables numériques et des variables de dates
+tableau_arachide <- tbl_merge(list(summarize_numeric(filiere_arachide), summarize_dates(filiere_arachide)))
+tableau_anacarde <- tbl_merge(list(summarize_numeric(filiere_anacarde), summarize_dates(filiere_anacarde)))
+tableau_mangue <- tbl_merge(list(summarize_numeric(filiere_mangue), summarize_dates(filiere_mangue)))
+tableau_riz <- tbl_merge(list(summarize_numeric(filiere_riz), summarize_dates(filiere_riz)))
+# Nommer les tableaux avec les noms de filières
+tab_1 <- tbl_summary(tableau_arachide, label = "Filière Arachide")
+tab_2 <- tbl_summary(tableau_anacarde, label = "Filière Anacarde")
+tab_3 <- tbl_summary(tableau_mangue, label = "Filière Mangue")
+tab_4 <- tbl_summary(tableau_riz, label = "Filière Riz")
+# Fusionner tous les tableaux en un seul tableau
+tableau_global <- tbl_merge(list(tab_1, tab_2, tab_3, tab_4),
+tab_spanner = c("**Statistiques descriptives**", "par filière"))
+# Afficher le tableau global
+tableau_global
+View(projet)
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by =c("sexe", "q16"), label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+tbl1 <- projet %>% tbl_summary(include = c("sexe", "q25", "q12", "q81"))
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+tbl2 <- projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+tbl2 <- projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+tbl2 <- projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+as_flex_table() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+# Répartition des PME suivant le statut juridique et le sexe, 	le niveau d’instruction et le sexe, •	Propriétaire/locataire suivant le sexe
+tbl2 <- projet %>% tbl_summary(
+include = c("q25", "q12", "q81"),
+by ="sexe", label=list(q12~ "Statut juridique",
+q25~ "Niveau d'instruction",
+q81~ "Propriétaire/locataire")) %>%
+add_overall() %>%
+modify_header(label ~ "**Caractéristiques**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Sexe**") %>%
+bold_labels()
+gtsummary::tbl_stack(
+list(tbl1, tbl2),
+group_header = c("Modèle univarié", "Modèle bivaré") ## intitulé des groupes de tableau associés
+)
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl1, tbl2),
+tab_spanner = c("Modèle bivarié", "Modèle multivarié") ## intitulé des groupes de tableau associés
+)
+tbl_merge()?
+help(tbl_merge())
+projet2 <- projet %>%
+rename(arachide = filiere_1, anacarde = filiere_2, mangue = filiere_3, riz =filiere_4)
+croiser_filiere <- function(projet, filiere) {
+tbl_summary_result <- projet %>%
+tbl_summary(
+include = c("sexe", "q25", "q12", "q81"),
+by = {{ filiere }},
+label = list(q25 ~ "niveau d'instruction",
+q12 ~ "statut juridique",
+q81 ~ "propriétaire ou locataire")
+) %>%
+add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>%
+add_overall() %>%
+add_n() %>%
+modify_header(label ~ "**Variable**") %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ paste0("**", filiere, "**")) %>%
+modify_footnote(all_stat_cols() ~ "Median (IQR) or Frequency (%)") %>%
+modify_caption(paste0("**Table 1. croisement var et ", filiere, "**")) %>%
+bold_labels()
+return(tbl_summary_result)
+}
+tbl_filiere_1 <- croiser_filiere(projet2, filiere = "arachide")
+tbl_filiere_2 <- croiser_filiere(projet2, filiere = "anacarde")
+tbl_filiere_3 <- croiser_filiere(projet2, filiere = "mangue")
+tbl_filiere_4 <- croiser_filiere(projet2, filiere = "riz")
+gtsummary::tbl_stack(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+group_header = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = c(bold_labels("arachide", "anacarde", "mangue", "riz")) ## intitulé des groupes de tableau associés
+)
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = bold_labels(c("arachide", "anacarde", "mangue", "riz")) ## intitulé des groupes de tableau associés
+)
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = c("arachide", "anacarde", "mangue", "riz") %>%
+bold_labels()## intitulé des groupes de tableau associés
+)
+gtsummary::tbl_stack(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+group_header = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = c(tab_header(arachide = md("**arachide**")),
+tab_header(anacarde = md("**anacarde**")),
+tab_header(mangue = md("**mangue**")),
+tab_header(riz = md("**riz**")))
+c=2
+## Agencement l'une à coté de l'autre
+gtsummary::tbl_merge(
+list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+tab_spanner = c("arachide", "anacarde", "mangue", "riz") ## intitulé des groupes de tableau associés
+)
+# 3 Cartographie
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+library(sf)
+# 3 Cartographie
+senegal = st_read("Bases/gadm41_SEN_shp/gadm41_SEN_1.shp")
+projet_map = st_as_sf(projet, coords = c("gps_menlongitude", "gps_menlatitude"), crs=st_crs(senegal), agr = "constant")
+projet_map = st_join(projet_map, senegal)
+ggplot(projet_map) #+
+library(ggplot2)
+ggplot(projet_map) #+
+ggplot() #+
+ggplot() +
+geom_sf(data=senegal)+
+#geom_sf(data=projet_map, aes(color=sexe), size=2)+
+#scale_color_manual(values=c("blue", "red"))+
+#labs(color="sexe")+
+#geom_sf_text(aes(label=region), fill="lightgray")
+data <- read.csv("Bases/ACLED-Western_Africa.csv")
+ggplot() +
+geom_sf(data=senegal)
+ggplot() +
+geom_sf(data=senegal)+
+#geom_sf(data=projet_map, aes(color=sexe), size=2)+
+#scale_color_manual(values=c("blue", "red"))+
+#labs(color="sexe")+
+geom_sf_text(aes(label=NAME_1), fill="lightgray")
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+#scale_color_manual(values=c("blue", "red"))+
+#labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1), fill="lightgray")
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+#scale_color_manual(values=c("blue", "red"))+
+#labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+labs(title = "réprésentation spatiale des PME suivant le sexe")
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+labs(title = "réprésentation spatiale des PME suivant le sexe",
+subtitle = "Carte du Sénégal",
+color = "Sexe") +
+theme_minimal())
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+labs(title = "réprésentation spatiale des PME suivant le sexe",
+subtitle = "Carte du Sénégal",
+color = "Sexe") +
+theme_minimal()
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+labs(title = "**Répartition des PME par sexe**",
+subtitle = "*Carte du Sénégal*",
+color = "**Sexe**") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(color="sexe")+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+labs(title = "Répartition des PME par sexe",
+subtitle = "Carte du Sénégal",
+color = "**Sexe**") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data=projet_map, aes(color=sexe), size=2)+
+scale_color_manual(values=c("blue", "red"))+
+labs(title = "Répartition des PME suivant le sexe",
+subtitle = "Carte du Sénégal",
+color = "Sexe") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size = 3) +
+scale_color_discrete(labels = c("Niveau d'instruction")) +
+labs(title = "**Répartition des PME suivant le niveau d'instruction**",
+subtitle = "*Carte du Sénégal*",
+color = "Niveau d'instruction") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+View(projet_map)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25)) +
+scale_color_discrete(labels = c("Niveau d'instruction")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal",
+color = "Niveau d'instruction") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25)) +
+scale_color_discrete(labels = c("Niveau d'instruction")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25)) +
+scale_color_manual(values=c("blue"))+
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25)) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size = 3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size = 3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold")
+)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size =3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+coord_sf(orient = 90)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size =3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+coord_fixed(angle = 90)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size =3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+north_arrow(location = "tl", scale = 0.05)
+ggplot() +
+geom_sf(data=senegal)+
+geom_sf_text(data=senegal, aes(label=NAME_1))+
+geom_sf(data = projet_map, aes(color = q25), size =3) +
+scale_color_manual(values=c("blue", "red", "green", "yellow")) +
+labs(title = "Répartition des PME suivant le niveau d'instruction",
+subtitle = "Carte du Sénégal") +
+theme_minimal() +
+theme(
+plot.title = element_text(hjust = 0.5, face = "bold"),
+plot.subtitle = element_text(hjust = 0.5, face = "bold"))+
+annotation_north_arrow(location = "tl", scale = 0.05)
+install.packages("ggspatial")

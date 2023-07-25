@@ -1,0 +1,7 @@
+{
+    "installOptions": {
+        "installFromRepository": true,
+        "libraryPath": "C:/Users/GOZAN Richard/Documents/R/win-library/4.1",
+        "installDependencies": true
+    }
+}

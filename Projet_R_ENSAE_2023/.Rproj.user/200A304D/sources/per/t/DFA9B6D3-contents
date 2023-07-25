@@ -1,0 +1,88 @@
+library(shiny)
+library(shinyWidgets)
+library(sf)
+library(leaflet)
+library(tidyverse)
+library(fst)
+library(readr)
+West.Afr <- read_csv("ACLED-Western_Africa.csv")
+# Convertir le data.frame West.Afr en donnée fst pour permettre une performance de lecture rapide
+write_fst(West.Afr, "West.Afr.fst")
+West.Afr.fst <- fst::read_fst("West.Afr.fst")
+
+# Icone selon le mouvement
+type_colors <- colorFactor(c("green","blue","yellow", "purple","maroon", "coral"), 
+                           levels = unique(West.Afr.fst$type))
+
+Icon <- makeAwesomeIcon(icon = 'home', 
+                iconColor = type_colors(West.Afr.fst$type), 
+                markerColor =  "#FF8000"
+)
+
+# Structure de la présnetation de l'application
+ui <- bootstrapPage(
+  ## 
+  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+  ## rendre la sortie de carte Leaflet en plein écran
+  leafletOutput("map", width = "100%", height = "100%"),
+  ## Afficher un panneau d'options sur la carte Leaflet.
+  absolutePanel(top = 10, right = 10,
+                ### Créer une liste déroulante (pickerInput) pour sélectionner un pays à afficher sur la carte
+                pickerInput("pays", label = "Sélectionner un pays:",
+                            ### Options d'entrée
+                            choices = unique(West.Afr.fst$pays),
+                            ### activer la recherche en direct d'un pays
+                            options = list(`live-search` = TRUE)
+                
+                          ),
+                # Choir un événement
+                pickerInput("type", label = "Sélectionner un événement :",
+                            ### Options d'entrée
+                            choices = list("Tous les événements", `Type` = unique(West.Afr.fst$type)),
+                            ### activer la recherche en direct d'un pévénement
+                            options = list(`live-search` = TRUE)),
+                # Choisir une date    
+                pickerInput("annee", label = "Sélectionner une année :",
+                            ### Options d'entrée
+                            choices = list("Toutes les années", `Date` = unique(West.Afr.fst$annee)),
+                            ### activer la recherche en direct d'une date
+                            options = list(`live-search` = TRUE)
+                            
+                )
+                
+                ) )
+         
+
+server <- function(input, output, session) {
+  ## Fitre des doonnées selon le pays, le type et la date
+  filteredData <- reactive({
+     if ((input$type == "Tous les événements")&(input$annee == "Toutes les années")){
+       West.Afr.fst %>% filter(pays == input$pays)
+     } else if ((input$type != "Tous les événements")&(input$annee == "Toutes les années")){
+       West.Afr.fst %>% filter(pays == input$pays  & type == input$type)
+     }else if ((input$type == "Tous les événements")&(input$annee != "Toutes les années")){
+       West.Afr.fst %>% filter(pays == input$pays & annee == input$annee)
+     } else {
+      West.Afr.fst %>% filter(pays == input$pays & type == input$type & annee == input$annee)
+     }
+  })
+  ## Garder que les icones correspondant aux données filtrées
+  filteredIcon <- reactive({
+     id.select = West.Afr.fst$id %in% filteredData()$id
+    Icon$iconColor <- Icon$iconColor[id.select]
+    Icon
+  })
+  
+  output$map <- renderLeaflet({
+    leaflet(filteredData()) %>%
+      addTiles() %>%
+      addAwesomeMarkers(lng = ~longitude, lat = ~latitude,
+                        icon = filteredIcon(), 
+                        label = ~paste0(pays, " : ", type, "\n", date),
+                        labelOptions = labelOptions(textsize = "12px"))
+  })
+  
+}
+
+
+shinyApp(ui, server)

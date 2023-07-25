@@ -1,0 +1,27 @@
+library(tidyverse)
+library(dplyr)
+library(gtsummary)
+library(knitr)
+library(tinytex)
+library(readxl)
+library(naniar)
+library(gt)
+
+
+tbl1 = projet %>%
+  tbl_summary(include = c("sexe","q25","q12","q81"),
+              by=filiere_1,
+              label = list(q25 ~ "niveau d'instruction",q12~"statut juridique",q81~"propriétaire ou locataire"), 
+  ) %>%
+  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>%
+  add_overall() %>%
+  add_n() %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**filière_1(arrachide)**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Median (IQR) or Frequency (%)"
+  ) %>%
+  modify_caption("**Table 1. croisement var et filieres**") %>%
+  bold_labels()
+tbl1
+sss

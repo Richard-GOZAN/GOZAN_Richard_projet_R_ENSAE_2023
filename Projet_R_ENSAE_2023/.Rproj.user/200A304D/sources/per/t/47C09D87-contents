@@ -1,0 +1,44 @@
+library(gtsummary)
+library(readxl)
+library(dplyr)
+
+
+
+# J'ai renommé les variables filières aux noms des différents filières
+projet2 <- projet %>%
+  rename(arachide = filiere_1, anacarde = filiere_2, mangue = filiere_3, riz =filiere_4)
+
+# J'ai crée la fonction croiser_filiere
+croiser_filiere <- function(projet, filiere) {
+  tbl_summary_result <- projet %>%
+    tbl_summary(
+      include = c("sexe", "q25", "q12", "q81"),
+      by = {{ filiere }},
+      label = list(q25 ~ "niveau d'instruction",
+                   q12 ~ "statut juridique",
+                   q81 ~ "propriétaire ou locataire")
+    ) %>%
+    add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2)) %>%
+    add_overall() %>%
+    add_n() %>%
+    modify_header(label ~ "**Variable**") %>%
+    modify_spanning_header(c("stat_1", "stat_2") ~ paste0("**", filiere, "**")) %>%
+    modify_footnote(all_stat_cols() ~ "Median (IQR) or Frequency (%)") %>%
+    modify_caption(paste0("**Table 1. croisement var et ", filiere, "**")) %>%
+    bold_labels()
+  
+  return(tbl_summary_result)
+}
+
+tbl_filiere_1 <- croiser_filiere(projet2, filiere = "arachide")
+tbl_filiere_2 <- croiser_filiere(projet2, filiere = "anacarde")
+tbl_filiere_3 <- croiser_filiere(projet2, filiere = "mangue")
+tbl_filiere_4 <- croiser_filiere(projet2, filiere = "riz")
+
+tbl_merge(
+  list(tbl_filiere_1, tbl_filiere_2, tbl_filiere_3, tbl_filiere_4),
+  tab_spanner = c("arachide", "anacarde", "mangue", "riz")) %>%
+  italicize_levels() %>%
+  as_flex_table() %>%
+  fontsize(size=8) %>%
+  width(width = 1.2)

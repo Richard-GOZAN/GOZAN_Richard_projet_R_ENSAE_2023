@@ -1,0 +1,203 @@
+---
+title: "Challenge"
+author: "Groupe7"
+date: "June 2023"
+output: 
+  word_document:
+    reference_doc: Version.docx
+    toc: yes
+    fig_caption: yes
+toc-depth: 4
+---
+
+
+**CONSTRUCTION DE LA COURBE DE TAUX  ET CHOIX OPTIMAL EN ASSURANCE AUTOMOBILE**
+
+
+# CHAPITRE 1 : CHOIX OPTIMAL DU COTE DE L’ASSUREUR
+
+## Généralités sur la courbe de taux 
+Dans cette section, une définition de la courbe de taux est proposée ainsi que les éléments de base nécessaires à sa construction sont présentés.
+
+### Définition de la courbe de taux 
+Une courbe des taux (en anglais : Yield Curve) est la représentation graphique de la fonction mathématique du taux d'intérêt effectif à un instant donné d'un zéro-coupon en fonction de sa maturité d'une même classe d'instruments fongibles exprimés dans une même devise.
+Par extension, on l'emploie pour des instruments non fongibles mais néanmoins fortement comparables entre eux, comme les emprunts à taux fixe d'un même État.
+
+### Rôles de la courbe de taux
+
+#### En économie et en finance
+La courbe des taux est un graphique qui représente les taux d’intérêt en fonction de la maturité des titres de dette. Elle indique le niveau de taux d’intérêt auquel l’émetteur doit faire face à une maturité donnée, à un instant donné.
+Elle est utilisée pour évaluer les anticipations du marché quant à l’évolution future des taux d’intérêt et de l’inflation. La courbe des taux est souvent utilisée pour prédire les récessions économiques. En effet, une courbe des taux inversée, c’est-à-dire une situation où les taux d’intérêt à court terme sont plus élevés que les taux d’intérêt à long terme, est souvent considérée comme un indicateur avancé de récession économique.
+
+#### Illustration par des courbes
+
+## Enjeu des courbes de taux d’actualisation pour les assureurs
+
+Pour faire face à ses engagements, l’assureur doit évaluer ex-ante les prix des contrats d’assurance et les risques qu’’ils couvrent de manière précise. Cette appréciation lui permet d’une part d’investir les primes collectées sur les actifs plus moins risqués pour se couvrir. Par ailleurs, l’évaluation de son passif étant faite de manière prospective, il doit constituer des provisions qui reflètent au mieux ses engagements.
+Les provisions constituées par l’assureur doivent refléter la valeur présente de ses engagements futurs. Il est donc primordial que la valeur temps de l’argent et les probabilités de survenance des risques soient très bien estimés par celui-ci.
+Pour fixer les idées, on va se donner un petit exemple sur une période de deux dates $t_0$ et $t_1$.
+A $t_0$, supposons qu’on ait un individu qui désire se couvrir contre un risque incertain dont la probabilité de réalisation à t1 est p, et qui engendrera une perte d’un montant certain (X est supposé déterministe et certain pour la simplicité de l’exemple) X en cas de réalisation et 0 sinon. Ce dernier se rapproche d’un assureur et contracte une police d’assurance moyennant une prime P0.
+Pour l’assureur, comment fixer le prix $P_0$ de cette police d’assurance ?
+Si l’assureur accepte de couvrir ce risque, à $t_1$ , si le risque s’est réalisé, il doit verser le montant X à l’assuré et 0 en cas de contrainte. Sur ce contrat, il est alors exposé à un risque dont le cout moyen est $p X$. Cette information donne une idée à l’assureur de la prime $P_0$ qu’il doit demander en échange de sa couverture.
+Une idée simple serait de demander à l’assuré l’équivalent de la somme p X vu de la date $t_1$ à la date $t_0$. La prime ne saurait être exactement égale à p X. En effet, l’argent a une valeur temps. Il faut pour cela utiliser un taux d’actualisation. Autrement quel serait le taux que l’assureur devrait choisir pour estimer à la date $t_0$, le montant $Px$. Ce taux $r (t_0, t_1)$ devrait vérifier : 
+
+
+Bien que simple, cet exemple montre l’intérêt des courbes de taux d’actualisation pour les assureurs.
+
+En pratique, les choses ne sont pas aussi simples comme dans notre exemple. Les contrats vont généralement au-delà d’une période et les primes ou les prestations versées sur plusieurs dates. Très souvent dans ces cas, à  une date quelconque, la valeur actualisée des prestations (pondérées par leurs probabilités d’occurrence) que l’assuré doit verser pour acheter sa couverture. L’assureur doit alors constituer des provisions mathématiques pour couvrir ses engagements futurs. Et dans ce cas, au lieu d’un seul taux d’actualisation, il doit en estimer plusieurs pour différentes dates. D’où la nécessité de construire une courbe d’actualisation.
+Le choix de la courbe de taux d’actualisation est donc un outil indispensable pour les assureurs. Elle peut être un élément clé de la stratégie de pilotage des assureurs. Une courbe de taux haute par exemple sous-estimerait les engagements de l’assureur tout en lui permettant une bonne marge de manœuvre aux fonds propres. Sous un régime prudentiel comme solvabilité ou des exigences sont requises pour les fonds propres ou encore sous la norme IFRS 17 qui impose la reconnaissance des contrats par groupe de profitabilité, les la courbe des taux d’actualisation occupe une place centrale dans les réflexions des assureurs.
+
+## Modèle utilisé pour la construction de la courbe de taux : Le modèle de Nelson Singel Svesson
+
+### Présentation du modèle
+Nelson et Siegel modélisent le taux forward instantané pour ajuster la courbe de rendement continue sur les rendements observés. Le point de départ des deux auteurs consiste à modéliser le taux forward comme la solution d’une équation différentielle d’ordre deux avec deux racines identiques. Ainsi, l’équation de Nelson et Siegel pour modéliser la courbe de taux d’intérêt forward instantané est illustrée par :   
+
+
+
+ La fonctionnelle des taux de spot est évaluée en utilisant la relation suivante en temps continu :
+ 
+
+### Description des paramètres du modèle
+Les paramètres du modèle sont interprétés comme suit:
+Le paramètre représente le niveau des taux d’intérêt à long terme.
+
+Le paramètre 
+ , Correspond à la pente de la courbe  représente la pente de la courbe des taux.
+La fonction de décroissance exponentielle reflète le second facteur, une pente descendante  ou ascendante 
+
+Le paramètre  représente la convexité de la courbe des taux.
+Nelson et Siegel (1987) ont choisi un polynôme du premier degré qui fait que la fonction de Laguerre dans le modèle de Nelson-Siegel génère une bosse ou un creux, forme en . Plus la valeur absolue de  est élevée, plus la bosse/creux est prononcée.
+Le terme devant  est appelée fonction de Laguerre.
+
+Le coefficient, appelé paramètre de forme, détermine à la fois la pente du facteur de pente et l’emplacement du maximum (resp. minimum) de la fonction de Laguerre.
+Le paramètre  représente la durée de vie moyenne des actifs. C’est le paramètre d’échelle ou de décroissance des taux vers zéro. 
+
+Le dernier paramètre du modèle est appelé le paramètre d’inclinaison et il est souvent fixé à 1,37. Cela permet de donner une forme raisonnable à la courbe des taux d’intérêt. 
+Francis X. Diebold est un économiste américain et Canlin Li est un économiste chinois. Ils ont publié ensemble un article en 2006 intitulé “Forecasting the term structure of government bond yields” qui traite de la prédiction de la structure à terme des rendements obligataires gouvernementaux.
+
+## Optimisation convexe de la courbe de taux en assurance
+	
+### Objectifs d'optimisation 
+Meilleur calibrage des paramètres  afin d’avoir un modèle qui nous permettra de prédire au mieux les taux d’intérêt à l’instant t.
+
+### Formulation du problème d'optimisation convexe pour la construction de la courbe de taux 
+Min 
+
+##  Méthodes d'optimisation convexe pour la construction de la courbe de taux en assurance
+ Méthode de  relation  (Algorithme)
+
+Méthode de gradient à pas fixe (Algorithmes)
+
+Méthode de gradient à pas optimal (Algorithme)
+
+## Cas d'étude et exemples pratiques
+A. Application de l'optimisation convexe à la construction de la courbe de taux en assurance dans un contexte spécifique
+B. Analyse des résultats et interprétation des courbes de taux optimisées en assurance
+
+## Limitations et considérations
+
+	Le fait de prendre le paramètre comme constant à savoir la valeur de 1,35.
+
+
+
+
+# CHAPITRE 2 : CHOIX OPTIMAL DU COTE DE L’ASSURE
+
+Dans le domaine de l'assurance, les individus sont souvent confrontés à une multitude de choix lorsqu'il s'agit de protéger leurs biens. Cependant, prendre les bonnes décisions en matière d'assurance peut être complexe et crucial pour garantir une protection adéquate tout en évitant des dépenses inutiles.
+Ce chapitre explore le concept du choix optimal du côté de l'assuré et a pour objectif de  fournir aux lecteurs des connaissances essentielles pour prendre des décisions éclairées en matière d'assurance, les aidant ainsi à naviguer dans le paysage complexe de l'assurance et à faire des choix optimaux pour leur protection financière et leur tranquillité d'esprit.
+
+## Présentation du cadre du travail (Définition des hypothèses de base)
+
+Etant donné la complexité du domaine de l’assurance et de son caractère aléatoire, pour notre travail, nous avons décidé de nous limiter à un cadre déterministe afin de mieux vous faire percevoir les choses. Pour une meilleure compréhension de la suite, nous allons commencer par définir quelques expressions clés dans le domaine de l’assurance.
+
+### Police d’assurance
+
+La police d’assurance est le contrat d’assurance qui matérialise l’accord entre l’assureur et l’assuré. Elle contient les garanties, les conditions d’engagement de l’assureur envers l’assuré, les obligations de l’assuré, la franchise d’assurance s’il y en a une et les délais de résiliation.
+En d’autres termes, la police d’assurance est simplement la version papier qui matérialise votre contrat. Elle reprend toutes les conditions et exclusions de l’accord contracté entre vous et votre assureur. Elle vous sert de preuve en cas de contrôle et doit être conservée précieusement
+
+### Prime d’assurance
+
+La prime d’assurance est le montant que vous payez à votre assureur en échange des garanties définies dans votre contrat. C’est le prix de l’assurance. En d’autres termes, c’est la somme que vous payez pour être couvert contre des risques prédéfinis avec la compagnie d’assurance.
+La plupart des cas, la prime d’assurance demandée par les sociétés d’assurance est constituée des primes pures et des couts fixes.
+Les couts fixes désignent ici les couts que la compagnie demande pour son bon fonctionnement
+
+### Prime pure 
+
+La prime pure est le montant du sinistre moyen auquel devra faire face l’assureur pour le risque. Mathématiquement, la prime pure est égale à l’espérance des pertes.
+
+### Franchise
+
+Une franchise en assurance est le montant qui reste à la charge de l’assuré en cas de sinistre. En d’autres termes, c’est une partie des coûts des dommages non prise en charge par votre assureur. La plupart des contrats d’assurance comporte une franchise, mais ce n’est pas obligatoire
+
+### Indemnisation
+
+L’indemnisation en assurance est la somme d’argent que l’assureur verse à l’assuré ou à la victime conformément aux dispositions du contrat en dédommagement du préjudice subi. L’indemnisation est la principale fonction des contrats d’assurance. Les polices d’assurance limitent d’habitude le montant de l’indemnisation que l’assureur verse à l’assuré.
+
+### Sinistre
+
+Un sinistre en assurance est la réalisation d’un événement prévu au contrat et susceptible d’entraîner la prise en charge financière du dommage par l’assureur. Exemple : un accident de voiture.
+
+### Risque
+
+En assurance, le risque est la probabilité que survienne un événement susceptible de porter atteinte à une personne et/ou à ses biens. L’assuré (particulier ou entreprise) peut se protéger de ce risque en souscrivant le contrat d’assurance adapté
+
+### Perte
+
+Les pertes couvrent ici  l’ensemble des dommages subis par un individu après un sinistre.
+
+### Aversion au risque
+
+L’aversion au risque est une attitude très générale qui conduit à ne pas considérer les perspectives économiques auxquelles on est confronté uniquement à travers leurs valeurs moyennes, mais en tenant compte des risques qui leur sont associés. Cette attitude est très présente dans le domaine de l’assurance. Les individus souscrivent des polices d’assurance pour se protéger contre les risques auxquels ils sont confrontés.
+
+#### Cas particulier de l’assurance automobile
+
+En ce qui concerne l'assurance automobile, l'aversion au risque se réfère à la propension d'un assuré à choisir une couverture plus étendue pour se protéger contre les éventuels risques et dommages liés à la conduite d'un véhicule. Une aversion au risque élevée se traduit généralement par la volonté de souscrire une assurance automobile plus complète, même si cela implique des primes plus élevées.
+
+Les individus ayant une forte aversion au risque en matière d'assurance automobile sont souvent préoccupés par les conséquences financières potentiellement importantes en cas d'accident, de vol ou de dommages matériels causés à leur véhicule. Ils préfèrent payer des primes plus élevées afin de bénéficier d'une couverture plus étendue, ce qui leur offre une plus grande tranquillité d'esprit et une meilleure protection financière en cas de sinistre.
+
+À l'inverse, ceux qui ont une aversion au risque plus faible peuvent être plus enclins à opter pour des polices d'assurance automobile de base ou à choisir des options de couverture réduite afin de réduire leurs primes d'assurance. Ils acceptent un niveau plus élevé de risques financiers potentiels en échange d'une prime moins élevée.
+
+Il convient de noter que le niveau d'aversion au risque en matière d'assurance automobile peut varier d'une personne à l'autre en fonction de facteurs tels que l'importance de leur véhicule, leur historique de conduite, leur tolérance aux risques et leur situation financière. Il est donc essentiel pour chaque individu de déterminer son propre niveau d'aversion au risque et de choisir une couverture d'assurance automobile qui correspond à ses besoins spécifiques et à son confort personnel face aux risques associés à la conduite automobile.
+
+### Utilité 
+Fonction permettant de matérialiser le niveau de satisfaction de l’assureur.
+
+### Définition et Propriété de la fonction d’utilité u
+Aversion pour le risque	Concave, 
+
+##Maximisation du bien-être de l’assuré
+	
+### Objectifs d'optimisation  et Contraintes spécifiques pour l’assuré
+Il s’agira pour nous 
+
+
+### Formulation du problème d'optimisation convexe pour la maximisation du bien-être de l’assuré 
+
+Considérons un problème plus général. Un individu avec une richesse initiale w fait face à un risque d’accident (événement A) pouvant entraîner une perte  S avec une probabilité p. Les préférences de l’individu sont représentées par le modèle d’espérance d’utilité et sa fonction d’utilité est u. Nous supposons qu’il est adversaire du risque et donc que u est concave.
+
+
+
+## Méthodes d'optimisation convexe 
+
+Méthode du Lagrangien
+(Algorithme) 
+
+## Cas pratique
+
+
+
+## Limitations et considérations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
